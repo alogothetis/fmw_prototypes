@@ -1,0 +1,32 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+   <entry key="LOCATIONS.COUNTRY_ID:db_column_size">2</entry>
+   <entry key="LOCATIONS:db_column_5">COUNTRY_ID</entry>
+   <entry key="LOCATIONS:db_column_4">STATE_PROVINCE</entry>
+   <entry key="LOCATIONS:db_column_3">CITY</entry>
+   <entry key="LOCATIONS:db_table_type">TABLE</entry>
+   <entry key="LOCATIONS:db_column_2">POSTAL_CODE</entry>
+   <entry key="LOCATIONS:db_column_1">STREET_ADDRESS</entry>
+   <entry key="LOCATIONS.LOCATION_ID:db_column_type">NUMBER</entry>
+   <entry key="LOCATIONS:db_column_0">LOCATION_ID</entry>
+   <entry key="LOCATIONS.POSTAL_CODE:db_column_type">VARCHAR2</entry>
+   <entry key="LOCATIONS.LOCATION_ID:db_column_not_null">true</entry>
+   <entry key="LOCATIONS.CITY:db_column_not_null">true</entry>
+   <entry key="LOCATIONS.STREET_ADDRESS:db_column_size">40</entry>
+   <entry key="LOCATIONS.STATE_PROVINCE:db_column_type">VARCHAR2</entry>
+   <entry key="LOCATIONS.STREET_ADDRESS:db_column_not_null">false</entry>
+   <entry key="LOCATIONS.CITY:db_column_type">VARCHAR2</entry>
+   <entry key="LOCATIONS.POSTAL_CODE:db_column_not_null">false</entry>
+   <entry key="LOCATIONS.LOCATION_ID:db_column_scale">0</entry>
+   <entry key="LOCATIONS.STATE_PROVINCE:db_column_not_null">false</entry>
+   <entry key="return_single_result_set">false</entry>
+   <entry key="LOCATIONS.POSTAL_CODE:db_column_size">12</entry>
+   <entry key="LOCATIONS.COUNTRY_ID:db_column_type">CHAR</entry>
+   <entry key="LOCATIONS.STATE_PROVINCE:db_column_size">25</entry>
+   <entry key="root_descriptor_alias">LOCATIONS</entry>
+   <entry key="LOCATIONS.CITY:db_column_size">30</entry>
+   <entry key="LOCATIONS.COUNTRY_ID:db_column_not_null">false</entry>
+   <entry key="LOCATIONS.STREET_ADDRESS:db_column_type">VARCHAR2</entry>
+   <entry key="LOCATIONS.LOCATION_ID:db_column_precision">4</entry>
+</properties>

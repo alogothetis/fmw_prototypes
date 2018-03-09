@@ -1,0 +1,38 @@
+<wsdl:definitions
+     name="LocationDbAdapter"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/soa/DatabaseAdapter/LocationDbAdapter"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/soa/DatabaseAdapter/LocationDbAdapter"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/LocationDbAdapter"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+  <plt:partnerLinkType name="LocationDbAdapter_plt" >
+    <plt:role name="LocationDbAdapter_role" >
+      <plt:portType name="tns:LocationDbAdapter_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+    <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" >
+        <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/LocationDbAdapter" schemaLocation="../Schemas/LocationDbAdapter_table.xsd" />
+      </schema>
+    </wsdl:types>
+    <wsdl:message name="LocationDbAdapterSelect_inputParameters">
+        <wsdl:part name="LocationDbAdapterSelect_inputParameters" element="top:LocationDbAdapterSelect_countryIdInputParameters"/>
+    </wsdl:message>
+    <wsdl:message name="LocationsCollection_msg">
+        <wsdl:part name="LocationsCollection" element="top:LocationsCollection"/>
+    </wsdl:message>
+    <wsdl:portType name="LocationDbAdapter_ptt">
+        <wsdl:operation name="merge">
+            <wsdl:input message="tns:LocationsCollection_msg"/>
+        </wsdl:operation>
+        <wsdl:operation name="delete">
+            <wsdl:input message="tns:LocationsCollection_msg"/>
+        </wsdl:operation>
+        <wsdl:operation name="LocationDbAdapterSelect">
+            <wsdl:input message="tns:LocationDbAdapterSelect_inputParameters"/>
+            <wsdl:output message="tns:LocationsCollection_msg"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

@@ -1,0 +1,148 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Mar 04 22:32:19 EET 2018
+  Author:  alog
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="LocationHandlerProcess"
+               targetNamespace="http://xmlns.antonislogothetis.com/DatabaseAdapter/Example/LocationHandlerProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.antonislogothetis.com/DatabaseAdapter/Example/LocationHandlerProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:ns1="http://xmlns.antonislogothetis.com/DatabaseAdapter/Example/LocationHandlerProcess"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ui="http://xmlns.oracle.com/soa/designer"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/soa/DatabaseAdapter/LocationDbAdapter"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/top/LocationDbAdapter"
+         xmlns:ns4="http://xmlns.antonislogothetis.com/DatabaseAdapter/Example/Schema"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <import namespace="http://xmlns.antonislogothetis.com/DatabaseAdapter/Example/LocationHandlerProcess"
+          location="../WSDLs/LocationHandlerProcessWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
+          ui:processWSDL="true"/>
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="locationhandlerprocess_ep" partnerLinkType="ns1:LocationHandlerProcess" myRole="LocationHandlerProcessPortType"/>
+    <partnerLink name="LocationDbAdapter" partnerLinkType="ns2:LocationDbAdapter_plt"
+                 partnerRole="LocationDbAdapter_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="findLocationsByCountryRequestVar" messageType="client:findLocationsByCountryRequestMessage"/>
+    <variable name="mergeVar" messageType="ns2:LocationsCollection_msg"/>
+    <variable name="deleteVar" messageType="ns2:LocationsCollection_msg"/>
+    <variable name="selectVar" messageType="ns2:LocationDbAdapterSelect_inputParameters"/>
+    <variable name="mergeLocationsRequestVar" messageType="client:mergeLocationsRequestMessage"/>
+    <variable name="deleteLocationsRequestVar" messageType="client:deleteLocationsRequestMessage"/>
+    <variable name="findLocationsByCountryResponse" messageType="client:findLocationsByCountryResponseMessage"/>
+    <variable name="selectResponseVar" messageType="ns2:LocationsCollection_msg"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in LocationHandlerProcess.wsdl) -->
+    <pick name="Pick" createInstance="yes">
+      <onMessage bpelx:name="mergeLocations" partnerLink="locationhandlerprocess_ep"
+                 variable="mergeLocationsRequestVar" portType="client:LocationHandlerProcessPortType"
+                 operation="mergeLocations">
+        <sequence>
+          <assign name="prepare">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("../Transformations/mergeInput.xsl", $mergeLocationsRequestVar.payload)</from>
+              <to variable="mergeVar" part="LocationsCollection"/>
+            </copy>
+          </assign>
+          <invoke name="merge" partnerLink="LocationDbAdapter"
+                  portType="ns2:LocationDbAdapter_ptt" operation="merge" inputVariable="mergeVar"
+                  bpelx:invokeAsDetail="no"/>
+        </sequence>
+      </onMessage>
+      <onMessage bpelx:name="deleteLocations" partnerLink="locationhandlerprocess_ep"
+                 variable="deleteLocationsRequestVar" portType="client:LocationHandlerProcessPortType"
+                 operation="deleteLocations">
+        <sequence>
+          <assign name="prepare">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("../Transformations/deleteInput.xsl", $deleteLocationsRequestVar.payload)</from>
+              <to variable="deleteVar" part="LocationsCollection"/>
+            </copy>
+          </assign>
+          <invoke name="delete" partnerLink="LocationDbAdapter"
+                  portType="ns2:LocationDbAdapter_ptt" operation="delete" inputVariable="deleteVar"
+                  bpelx:invokeAsDetail="no"/>
+        </sequence>
+      </onMessage>
+      <onMessage bpelx:name="findLocationByCountry" partnerLink="locationhandlerprocess_ep"
+                 variable="findLocationsByCountryRequestVar" portType="client:LocationHandlerProcessPortType"
+                 operation="findLocationsByCountry">
+        <sequence>
+          <assign name="prepare">
+            <copy>
+              <from>$findLocationsByCountryRequestVar.payload/ns4:countryId</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$selectVar.LocationDbAdapterSelect_inputParameters/ns3:countryId</to>
+            </copy>
+          </assign>
+          <invoke name="select" partnerLink="LocationDbAdapter"
+                  portType="ns2:LocationDbAdapter_ptt" operation="LocationDbAdapterSelect" inputVariable="selectVar" outputVariable="selectResponseVar"
+                  bpelx:invokeAsDetail="no"/>
+          <assign name="prepareResponse">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("../Transformations/selectResponse.xsl", $selectResponseVar.LocationsCollection)</from>
+              <to variable="findLocationsByCountryResponse" part="payload"/>
+            </copy>
+          </assign>
+          <reply name="Reply" partnerLink="locationhandlerprocess_ep" variable="findLocationsByCountryResponse"
+                 portType="client:LocationHandlerProcessPortType" operation="findLocationsByCountry"/>
+        </sequence>
+      </onMessage>
+    </pick>
+
+  </sequence>
+</process>

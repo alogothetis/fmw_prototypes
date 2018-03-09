@@ -1,0 +1,16 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="LocationHandlerProcess"
+     targetNamespace="http://xmlns.antonislogothetis.com/DatabaseAdapter/Example/LocationHandlerProcess"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:bpws="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:tns="http://xmlns.antonislogothetis.com/DatabaseAdapter/Example/LocationHandlerProcess"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="LocationHandlerProcess">
+        <plnk:role name="LocationHandlerProcessPortType" portType="tns:LocationHandlerProcessPortType"/>
+    </plnk:partnerLinkType>
+    <wsdl:import namespace="http://xmlns.antonislogothetis.com/DatabaseAdapter/Example/LocationHandlerProcess"
+         location="LocationHandlerProcess.wsdl"/>
+</wsdl:definitions>

@@ -1,0 +1,37 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions name="LocationHandlerProcess"
+                  targetNamespace="http://xmlns.antonislogothetis.com/DatabaseAdapter/Example/LocationHandlerProcess"
+                  xmlns:tns="http://xmlns.antonislogothetis.com/DatabaseAdapter/Example/LocationHandlerProcess"
+                  xmlns:inp1="http://xmlns.antonislogothetis.com/DatabaseAdapter/Example/Schema"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://xmlns.antonislogothetis.com/DatabaseAdapter/Example/Schema"
+                  schemaLocation="../Schemas/LocationHandler.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="mergeLocationsRequestMessage">
+    <wsdl:part name="payload" element="inp1:mergeLocationsRequest"/>
+  </wsdl:message>
+  <wsdl:message name="deleteLocationsRequestMessage">
+    <wsdl:part name="payload" element="inp1:deleteLocationsRequest"/>
+  </wsdl:message>
+  <wsdl:message name="findLocationsByCountryRequestMessage">
+    <wsdl:part name="payload" element="inp1:findLocationsByCountryRequest"/>
+  </wsdl:message>
+  <wsdl:message name="findLocationsByCountryResponseMessage">
+    <wsdl:part name="payload" element="inp1:findLocationsByCountryResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="LocationHandlerProcessPortType">
+    <wsdl:operation name="mergeLocations">
+      <wsdl:input message="tns:mergeLocationsRequestMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteLocations">
+      <wsdl:input message="tns:deleteLocationsRequestMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="findLocationsByCountry">
+      <wsdl:input message="tns:findLocationsByCountryRequestMessage"/>
+      <wsdl:output message="tns:findLocationsByCountryResponseMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>
