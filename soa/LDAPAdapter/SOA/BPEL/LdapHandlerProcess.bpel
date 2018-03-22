@@ -1,0 +1,193 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Mar 14 15:16:37 EET 2018
+  Author:  alog
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="LdapHandlerProcess"
+               targetNamespace="http://xmlns.antonislogothetis.com/soa/LDAPAdapter/LdapHandlerProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.antonislogothetis.com/soa/LDAPAdapter/LdapHandlerProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:ns1="http://xmlns.antonislogothetis.com/soa/LDAPAdapter/LdapHandler"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ui="http://xmlns.oracle.com/soa/designer"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/LDAPAdd"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Modify"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Search"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Compare"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Delete"
+         xmlns:ns8="http://xmlns.antonislogothetis.com/LdapAdapter/Example/Schema"
+         xmlns:ns7="http://platform.integration.oracle/blocks/adapter/fw/metadata/Compare">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <import namespace="http://xmlns.antonislogothetis.com/soa/LDAPAdapter/LdapHandler"
+          location="../WSDLs/LdapHandlerWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
+          ui:processWSDL="true"/>
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="ldaphandlerprocess" partnerLinkType="ns1:LdapHandlerProcess" myRole="LdapHandlerPortType"/>
+    <partnerLink name="Add" partnerLinkType="ns2:add_plt" partnerRole="add_role"/>
+    <partnerLink name="Modify" partnerLinkType="ns3:modify_plt" partnerRole="modify_role"/>
+    <partnerLink name="Search" partnerLinkType="ns4:search_plt" partnerRole="search_role"/>
+    <partnerLink name="Compare" partnerLinkType="ns5:compare_plt" partnerRole="compare_role"/>
+    <partnerLink name="Delete" partnerLinkType="ns6:delete_plt" partnerRole="delete_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="ns1:createUserRequestMessage"/>
+    <variable name="createUserInput" messageType="ns1:createUserRequestMessage"/>
+    <variable name="modifyPhoneInput" messageType="ns1:modifyPhoneRequestMessage"/>
+    <variable name="findUserInput" messageType="ns1:findUserRequestMessage"/>
+    <variable name="comparePhoneInput" messageType="ns1:comparePhoneRequestMessage"/>
+    <variable name="deleteUserInput" messageType="ns1:deleteUserRequestMessage"/>
+    <variable name="addRequest" messageType="ns2:add_request_msg"/>
+    <variable name="modifyRequest" messageType="ns3:modify_request_msg"/>
+    <variable name="deleteRequest" messageType="ns6:delete_request_msg"/>
+    <variable name="searchRequest" messageType="ns4:search_request_msg"/>
+    <variable name="compareRequest" messageType="ns5:compare_request_msg"/>
+    <variable name="compareResponse" messageType="ns5:compare_response_msg"/>
+    <variable name="comparePhoneOutput" messageType="ns1:comparePhoneResponseMessage"/>
+    <variable name="searchResponse" messageType="ns4:search_response_msg"/>
+    <variable name="findUserOutput" messageType="ns1:findUserResponseMessage"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in LdapHandlerProcess.wsdl) -->
+    <pick name="Pick" createInstance="yes">
+      <onMessage bpelx:name="createUser" partnerLink="ldaphandlerprocess" variable="createUserInput"
+                 portType="ns1:LdapHandlerPortType" operation="createUser">
+        <sequence>
+          <assign name="prepare">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("../Transformations/addRequest.xsl", $createUserInput.payload)</from>
+              <to variable="addRequest" part="body"/>
+            </copy>
+          </assign>
+          <invoke name="Add" partnerLink="Add" portType="ns2:add_ptt" operation="add" inputVariable="addRequest"
+                  bpelx:invokeAsDetail="no"/>
+        </sequence>
+      </onMessage>
+      <onMessage bpelx:name="modifyPhone" partnerLink="ldaphandlerprocess" variable="modifyPhoneInput"
+                 portType="ns1:LdapHandlerPortType" operation="modifyPhone">
+        <sequence>
+          <assign name="prepare">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("../Transformations/modifyRequest.xsl", $modifyPhoneInput.payload)</from>
+              <to variable="modifyRequest" part="body"/>
+            </copy>
+          </assign>
+          <invoke name="Modify" partnerLink="Modify" portType="ns3:modify_ptt" operation="modify"
+                  inputVariable="modifyRequest" bpelx:invokeAsDetail="no"/>
+        </sequence>
+      </onMessage>
+      <onMessage bpelx:name="findUser" partnerLink="ldaphandlerprocess" variable="findUserInput"
+                 portType="ns1:LdapHandlerPortType" operation="findUser">
+        <sequence>
+          <assign name="prepare">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("../Transformations/searchRequest.xsl", $findUserInput.payload)</from>
+              <to variable="searchRequest" part="body"/>
+            </copy>
+          </assign>
+          <invoke name="Search" partnerLink="Search" portType="ns4:search_ptt"
+                  operation="search" inputVariable="searchRequest" outputVariable="searchResponse"
+                  bpelx:invokeAsDetail="no"/>
+          <assign name="prepareResponse">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("../Transformations/findUserOutput.xsl", $searchResponse.body)</from>
+              <to variable="findUserOutput" part="paylaod"/>
+            </copy>
+          </assign>
+          <reply name="Reply" partnerLink="ldaphandlerprocess" variable="findUserOutput"
+                 portType="ns1:LdapHandlerPortType" operation="findUser"/>
+        </sequence>
+      </onMessage>
+      <onMessage bpelx:name="comparePhone" partnerLink="ldaphandlerprocess" variable="comparePhoneInput"
+                 portType="ns1:LdapHandlerPortType" operation="comparePhone">
+        <sequence>
+          <assign name="prepare">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("../Transformations/compareRequest.xsl", $comparePhoneInput.payload)</from>
+              <to variable="compareRequest" part="body"/>
+            </copy>
+          </assign>
+          <invoke name="Compare" partnerLink="Compare" portType="ns5:compare_ptt"
+                  operation="compare" inputVariable="compareRequest" outputVariable="compareResponse"
+                  bpelx:invokeAsDetail="no"/>
+          <assign name="prepareResponse">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("../Transformations/comparePhoneOutput.xsl", $compareResponse.body)</from>
+              <to variable="comparePhoneOutput" part="paylaod"/>
+            </copy>
+          </assign>
+          <reply name="Reply" partnerLink="ldaphandlerprocess" variable="comparePhoneOutput"
+                 portType="ns1:LdapHandlerPortType" operation="comparePhone"/>
+        </sequence>
+      </onMessage>
+      <onMessage bpelx:name="deleteUser" partnerLink="ldaphandlerprocess" variable="deleteUserInput"
+                 portType="ns1:LdapHandlerPortType" operation="deleteUser">
+        <sequence>
+          <assign name="prepare">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("../Transformations/deleteRequest.xsl", $deleteUserInput.payload)</from>
+              <to variable="deleteRequest" part="body"/>
+            </copy>
+          </assign>
+          <invoke name="Delete" partnerLink="Delete" portType="ns6:delete_ptt" operation="delete"
+                  inputVariable="deleteRequest" bpelx:invokeAsDetail="no"/>
+        </sequence>
+      </onMessage>
+    </pick>
+  </sequence>
+</process>

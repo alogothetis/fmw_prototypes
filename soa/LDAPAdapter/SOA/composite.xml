@@ -11,6 +11,90 @@
            xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy"
            xmlns:ui="http://xmlns.oracle.com/soa/designer/"
            xmlns:sca-ext="http://xmlns.oracle.com/sca/1.0-ext">
+  <import namespace="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/LDAPAdd" location="WSDLs/Add.wsdl"
+          importType="wsdl"/>
+  <import namespace="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Delete" location="WSDLs/Delete.wsdl"
+          importType="wsdl"/>
+  <import namespace="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Search" location="WSDLs/Search.wsdl"
+          importType="wsdl"/>
+  <import namespace="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Compare" location="WSDLs/Compare.wsdl"
+          importType="wsdl"/>
+  <import namespace="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Modify" location="WSDLs/Modify.wsdl"
+          importType="wsdl"/>
+  <import namespace="http://xmlns.antonislogothetis.com/soa/LDAPAdapter/LdapHandler"
+          location="WSDLs/LdapHandlerWrapper.wsdl" importType="wsdl"/>
+  <service name="ldaphandlerprocess_ep" ui:wsdlLocation="WSDLs/LdapHandlerWrapper.wsdl">
+    <interface.wsdl interface="http://xmlns.antonislogothetis.com/soa/LDAPAdapter/LdapHandler#wsdl.interface(LdapHandlerPortType)"/>
+    <binding.ws port="http://xmlns.antonislogothetis.com/soa/LDAPAdapter/LdapHandler#wsdl.endpoint(ldaphandlerprocess_ep/LdapHandlerPort)"/>
+  </service>
   <property name="productVersion" type="xs:string" many="false">12.2.1.3.0.170820</property>
   <property name="compositeID" type="xs:string" many="false">c10d1cb1-70a1-43e1-857b-67e2f9d3d639</property>
+  <component name="LdapHandlerProcess" version="2.0">
+    <implementation.bpel src="BPEL/LdapHandlerProcess.bpel"/>
+    <componentType>
+      <service name="ldaphandlerprocess" ui:wsdlLocation="WSDLs/LdapHandlerWrapper.wsdl">
+        <interface.wsdl interface="http://xmlns.antonislogothetis.com/soa/LDAPAdapter/LdapHandler#wsdl.interface(LdapHandlerPortType)"/>
+      </service>
+      <reference name="Add" ui:wsdlLocation="WSDLs/Add.wsdl">
+        <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/LDAPAdd#wsdl.interface(add_ptt)"/>
+      </reference>
+      <reference name="Modify" ui:wsdlLocation="WSDLs/Modify.wsdl">
+        <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Modify#wsdl.interface(modify_ptt)"/>
+      </reference>
+      <reference name="Search" ui:wsdlLocation="WSDLs/Search.wsdl">
+        <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Search#wsdl.interface(search_ptt)"/>
+      </reference>
+      <reference name="Compare" ui:wsdlLocation="WSDLs/Compare.wsdl">
+        <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Compare#wsdl.interface(compare_ptt)"/>
+      </reference>
+      <reference name="Delete" ui:wsdlLocation="WSDLs/Delete.wsdl">
+        <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Delete#wsdl.interface(delete_ptt)"/>
+      </reference>
+    </componentType>
+    <property name="bpel.config.oneWayDeliveryPolicy" type="xs:string" many="false">async.persist</property>
+  </component>
+  <reference name="Add" ui:wsdlLocation="WSDLs/Add.wsdl">
+    <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/LDAPAdd#wsdl.interface(add_ptt)"/>
+    <binding.jca config="Adapters/Add_ldap.jca"/>
+  </reference>
+  <reference name="Delete" ui:wsdlLocation="WSDLs/Delete.wsdl">
+    <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Delete#wsdl.interface(delete_ptt)"/>
+    <binding.jca config="Adapters/Delete_ldap.jca"/>
+  </reference>
+  <reference name="Search" ui:wsdlLocation="WSDLs/Search.wsdl">
+    <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Search#wsdl.interface(search_ptt)"/>
+    <binding.jca config="Adapters/Search_ldap.jca"/>
+  </reference>
+  <reference name="Compare" ui:wsdlLocation="WSDLs/Compare.wsdl">
+    <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Compare#wsdl.interface(compare_ptt)"/>
+    <binding.jca config="Adapters/Compare_ldap.jca"/>
+  </reference>
+  <reference name="Modify" ui:wsdlLocation="WSDLs/Modify.wsdl">
+    <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Modify#wsdl.interface(modify_ptt)"/>
+    <binding.jca config="Adapters/Modify_ldap.jca"/>
+  </reference>
+  <wire>
+    <source.uri>ldaphandlerprocess_ep</source.uri>
+    <target.uri>LdapHandlerProcess/ldaphandlerprocess</target.uri>
+  </wire>
+  <wire>
+    <source.uri>LdapHandlerProcess/Add</source.uri>
+    <target.uri>Add</target.uri>
+  </wire>
+  <wire>
+    <source.uri>LdapHandlerProcess/Modify</source.uri>
+    <target.uri>Modify</target.uri>
+  </wire>
+  <wire>
+    <source.uri>LdapHandlerProcess/Search</source.uri>
+    <target.uri>Search</target.uri>
+  </wire>
+  <wire>
+    <source.uri>LdapHandlerProcess/Compare</source.uri>
+    <target.uri>Compare</target.uri>
+  </wire>
+  <wire>
+    <source.uri>LdapHandlerProcess/Delete</source.uri>
+    <target.uri>Delete</target.uri>
+  </wire>
 </composite>

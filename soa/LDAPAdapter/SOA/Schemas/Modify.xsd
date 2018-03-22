@@ -1,0 +1,39 @@
+<?xml version= "1.0" encoding= "UTF-8" ?>
+<schema targetNamespace="http://platform.integration.oracle/blocks/adapter/fw/metadata/Modify"
+            xmlns="http://www.w3.org/2001/XMLSchema"
+            xmlns:tns="http://platform.integration.oracle/blocks/adapter/fw/metadata/Modify"
+            elementFormDefault="unqualified">
+  <element name="modifyRequest">
+     <complexType>
+         <sequence>
+             <element name="dn" type="string"/>
+             <element name="modifyAttributes">
+                 <complexType>
+                    <sequence>
+                       <element name="telephoneNumber" type="tns:modificationType"/>
+                    </sequence>
+                 </complexType>
+             </element>
+          </sequence>
+     </complexType>
+  </element>
+<complexType name="modificationType">
+   <sequence>
+      <element name="method">
+         <simpleType>
+             <restriction base="string">
+                <enumeration value="add"/>
+                <enumeration value="delete"/>
+                <enumeration value="replace"/>
+             </restriction>
+         </simpleType>
+      </element>
+      <element name="attributeValue" type="tns:multiValueAttribute" minOccurs="0"/>
+   </sequence>
+</complexType>
+<complexType name="multiValueAttribute">
+   <sequence>
+       <element name="value" type="string" maxOccurs="unbounded"/>
+   </sequence>
+</complexType>
+</schema>

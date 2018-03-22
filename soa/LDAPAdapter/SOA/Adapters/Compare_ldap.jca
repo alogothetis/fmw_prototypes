@@ -1,0 +1,8 @@
+<adapter-config name="Compare" adapter="ldap" wsdlLocation="../WSDLs/Compare.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/ldap/ApacheDS"/>
+  <endpoint-interaction portType="compare_ptt" operation="compare">
+    <interaction-spec className="oracle.tip.adapter.ldap.outbound.sync.LdapCompareInteractionSpec"/>
+  </endpoint-interaction>
+
+</adapter-config>

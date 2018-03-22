@@ -1,0 +1,8 @@
+<adapter-config name="Modify" adapter="ldap" wsdlLocation="../WSDLs/Modify.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/ldap/ApacheDS"/>
+  <endpoint-interaction portType="modify_ptt" operation="modify">
+    <interaction-spec className="oracle.tip.adapter.ldap.outbound.async.LdapModifyInteractionSpec"/>
+  </endpoint-interaction>
+
+</adapter-config>

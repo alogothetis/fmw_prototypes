@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://xmlns.antonislogothetis.com/LdapAdapter/Example/Schema"
+            targetNamespace="http://xmlns.antonislogothetis.com/LdapAdapter/Example/Schema"
+            elementFormDefault="qualified">
+  <xsd:element name="createUserRequest" type="createUserRequestType"/>
+  <xsd:element name="modifyPhoneRequest" type="modifyPhoneRequestType"/>
+  <xsd:element name="findUserRequest" type="findUserRequestType"/>
+  <xsd:element name="findUserResponse" type="findUserResponseType"/>
+  <xsd:element name="comparePhoneRequest" type="comparePhoneRequestType"/>
+  <xsd:element name="comparePhoneResponse" type="comparePhoneResponseType"/>
+  <xsd:element name="deleteUserRequest" type="deleteUserRequestType"/>
+  <xsd:complexType name="createUserRequestType">
+    <xsd:sequence>
+      <xsd:element name="userId" type="xsd:string"/>
+      <xsd:element name="displayName" type="xsd:string"/>
+      <xsd:element name="email" type="xsd:string"/>
+      <xsd:element name="phone" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="modifyPhoneRequestType">
+    <xsd:sequence>
+      <xsd:element name="userId" type="xsd:string"/>
+      <xsd:element name="phone" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="findUserRequestType">
+    <xsd:sequence>
+      <xsd:element name="userId" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="findUserResponseType">
+    <xsd:sequence>
+      <xsd:element name="displayName" type="xsd:string"/>
+      <xsd:element name="email" type="xsd:string"/>
+      <xsd:element name="phone" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="comparePhoneRequestType">
+    <xsd:sequence>
+      <xsd:element name="userId" type="xsd:string"/>
+      <xsd:element name="phone" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="comparePhoneResponseType">
+    <xsd:sequence>
+      <xsd:element name="success" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="deleteUserRequestType">
+    <xsd:sequence>
+      <xsd:element name="userId" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

@@ -1,0 +1,52 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions name="LdapHandler" targetNamespace="http://xmlns.antonislogothetis.com/soa/LDAPAdapter/LdapHandler"
+                  xmlns:tns="http://xmlns.antonislogothetis.com/soa/LDAPAdapter/LdapHandler"
+                  xmlns:inp1="http://xmlns.antonislogothetis.com/LdapAdapter/Example/Schema"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://xmlns.antonislogothetis.com/LdapAdapter/Example/Schema"
+                  schemaLocation="../Schemas/LdapHandler.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="createUserRequestMessage">
+    <wsdl:part name="payload" element="inp1:createUserRequest"/>
+  </wsdl:message>
+  <wsdl:message name="modifyPhoneRequestMessage">
+    <wsdl:part name="payload" element="inp1:modifyPhoneRequest"/>
+  </wsdl:message>  
+  <wsdl:message name="findUserRequestMessage">
+    <wsdl:part name="payload" element="inp1:findUserRequest"/>
+  </wsdl:message>
+  <wsdl:message name="findUserResponseMessage">
+    <wsdl:part name="paylaod" element="inp1:findUserResponse"/>
+  </wsdl:message>
+    <wsdl:message name="comparePhoneRequestMessage">
+    <wsdl:part name="payload" element="inp1:comparePhoneRequest"/>
+  </wsdl:message>
+  <wsdl:message name="comparePhoneResponseMessage">
+    <wsdl:part name="paylaod" element="inp1:comparePhoneResponse"/>
+  </wsdl:message>
+  <wsdl:message name="deleteUserRequestMessage">
+    <wsdl:part name="payload" element="inp1:deleteUserRequest"/>
+  </wsdl:message>
+  <wsdl:portType name="LdapHandlerPortType">
+    <wsdl:operation name="createUser">
+      <wsdl:input message="tns:createUserRequestMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="modifyPhone">
+      <wsdl:input message="tns:modifyPhoneRequestMessage"/>
+    </wsdl:operation>    
+    <wsdl:operation name="findUser">
+      <wsdl:input message="tns:findUserRequestMessage"/>
+      <wsdl:output message="tns:findUserResponseMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="comparePhone">
+      <wsdl:input message="tns:comparePhoneRequestMessage"/>
+      <wsdl:output message="tns:comparePhoneResponseMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteUser">
+      <wsdl:input message="tns:deleteUserRequestMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

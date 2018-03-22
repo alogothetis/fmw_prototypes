@@ -1,0 +1,10 @@
+<adapter-config name="Delete" adapter="ldap" wsdlLocation="../WSDLs/Delete.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/ldap/ApacheDS"/>
+  <endpoint-interaction portType="delete_ptt" operation="delete">
+    <interaction-spec className="oracle.tip.adapter.ldap.outbound.async.LdapDeleteInteractionSpec">
+      <property name="SuppressEntryDoesNotExist" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>

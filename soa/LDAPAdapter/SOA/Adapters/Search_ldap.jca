@@ -1,0 +1,18 @@
+<adapter-config name="Search" adapter="ldap" wsdlLocation="../WSDLs/Search.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/ldap/ApacheDS"/>
+  <endpoint-interaction portType="search_ptt" operation="search">
+    <interaction-spec className="oracle.tip.adapter.ldap.outbound.sync.LdapSearchInteractionSpec">
+      <property name="ReturnAttributesDelimiter" value=","/>
+      <property name="HopLimit" value="1"/>
+      <property name="TypesOnly" value="false"/>
+      <property name="FollowReferrals" value="ignore"/>
+      <property name="SizeLimit" value="1000"/>
+      <property name="SearchScope" value="wholeSubtree"/>
+      <property name="ReturnAttributes" value="cn,description,displayName,homePhone,homePostalAddress,mail,sn,telephoneNumber,uid"/>
+      <property name="AliasDereferencing" value="never"/>
+      <property name="TimeLimit" value="0"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>

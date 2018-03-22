@@ -1,0 +1,28 @@
+<wsdl:definitions
+     name="Modify"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Modify"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/ldap/soa/LDAPAdapter/Modify"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:imp1="http://platform.integration.oracle/blocks/adapter/fw/metadata/Modify"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+  <plt:partnerLinkType name="modify_plt" >
+    <plt:role name="modify_role" >
+      <plt:portType name="tns:modify_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+    <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" >
+        <import namespace="http://platform.integration.oracle/blocks/adapter/fw/metadata/Modify" schemaLocation="../Schemas/Modify.xsd" />
+      </schema>
+    </wsdl:types>
+    <wsdl:message name="modify_request_msg">
+        <wsdl:part name="body" element="imp1:modifyRequest"/>
+    </wsdl:message>
+    <wsdl:portType name="modify_ptt">
+        <wsdl:operation name="modify">
+            <wsdl:input message="tns:modify_request_msg"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>
